@@ -6,22 +6,34 @@ const API_URL         = 'https://api.hashnode.com',
 	  };
 
 async function query_api( username = false) {
-	const query       = `
-{
-	user(username: "${username}"){
-		posts(pageSize: 5 page: 1) {
-		  	nodes {
-				title
-				url
-			}
-		}
-	}
-}
-`;
+// 	const query       = `
+// {
+// 	user(username: "${username}"){
+// 		posts(pageSize: 5 page: 1) {
+// 		  	nodes {
+// 				title
+// 				url
+// 			}
+// 		}
+// 	}
+// }
+// `;
 	const result      = await fetch( API_URL, {
 		method: 'POST',
 		headers: DEFAULT_HEADERS,
-		body: JSON.stringify( { query } ),
+		body: JSON.stringify( {
+			query: `
+			{
+				user(username: "Phonghaw2"){
+					posts(pageSize: 5 page: 1) {
+						  nodes {
+							title
+							url
+						}
+					}
+				}
+			}`
+		} ),
 	} );
 	const ApiResponse = await result.json();
 
