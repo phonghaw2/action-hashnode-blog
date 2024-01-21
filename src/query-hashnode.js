@@ -22,17 +22,14 @@ async function query_api( username = false) {
 		method: 'POST',
 		headers: DEFAULT_HEADERS,
 		body: JSON.stringify( {
-			query: `
-			{
-				user(username: "Phonghaw2"){
-					posts(pageSize: 5 page: 1) {
-						  nodes {
-							title
-							url
-						}
+			user(username: "Phonghaw2"){
+				posts(pageSize: 5 page: 1) {
+					nodes {
+						title
+						url
 					}
 				}
-			}`
+			}
 		} ),
 	} );
 	const ApiResponse = await result.json();
