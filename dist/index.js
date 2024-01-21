@@ -3031,9 +3031,10 @@ ${helpers.a(url, title, `<strong>${title}</strong>`)}
 	return (html += "</tr></table>");
 }
 
-async function lists(posts, STYLE) {
+async function lists(response, STYLE) {
 	let markdown = [];
 	STYLE = STYLE.toLowerCase();
+	let posts = response.data.publication.posts.edges.map(edge => edge.node);
 	posts.forEach((post, index) => {
 		switch (STYLE) {
 			case "list":
@@ -3042,9 +3043,6 @@ async function lists(posts, STYLE) {
 				break;
 			case "list-ordered":
 				markdown.push(`1. [${post.title}](${post.url})`);
-				break;
-			case "list-gist":
-				markdown.push(`${index + 1}. ${post.title}`);
 				break;
 		}
 	});
@@ -3250,14 +3248,16 @@ const API_URL         = 'https://gql.hashnode.com/',
 
 async function query_api( username = false ) {
 	const query       = `{
-	user(username: "${username}"){
-		posts(pageSize: 5 page: 1) {
-			nodes {
-				title
-				url
+		publication(host: "phonghaw2coder.hashnode.dev") {
+			posts(first: 5) {
+			  edges {
+				node {
+				  url
+				  title
+				}
+			  }
 			}
-		}
-	}
+		  }
 	}`;
 	const result      = await fetch( API_URL, {
 		method: 'POST',
@@ -3266,20 +3266,11 @@ async function query_api( username = false ) {
 	} );
 	const ApiResponse = await result.json();
 
-	if( 0 === ApiResponse.data.user.posts.nodes.length ) {
-		return false;
-	}
-
-	return ApiResponse.data.user.posts.nodes;
+	return ApiResponse;
 }
 
 module.exports = async function( username ) {
 	let results = await query_api( username );
-
-	if ( false === results ) {
-		return [];
-	}
-
 	return results;
 };
 

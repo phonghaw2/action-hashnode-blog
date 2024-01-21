@@ -5,16 +5,18 @@ const API_URL         = 'https://gql.hashnode.com/',
 		  'Content-type': 'application/json',
 	  };
 
-async function query_api( username = false) {
+async function query_api( username = false ) {
 	const query       = `{
-		user(username: "${username}"){
-			posts(pageSize: 5 page: 1) {
-				nodes {
-					title
+		publication(host: "phonghaw2coder.hashnode.dev") {
+			posts(first: 5) {
+				edges {
+				node {
 					url
+					title
+				}
 				}
 			}
-		}
+			}
 	}`;
 	const result      = await fetch( API_URL, {
 		method: 'POST',
@@ -23,19 +25,10 @@ async function query_api( username = false) {
 	} );
 	const ApiResponse = await result.json();
 
-	if( 0 === ApiResponse.data.user.posts.nodes.length ) {
-		return false;
-	}
-
-	return ApiResponse.data.user.posts.nodes;
+	return ApiResponse;
 }
 
 module.exports = async function( username ) {
 	let results = await query_api( username );
-
-	if ( false === results ) {
-		return [];
-	}
-
 	return results;
 };

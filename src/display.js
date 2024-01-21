@@ -28,10 +28,11 @@ ${helpers.a(url, title, `<strong>${title}</strong>`)}
 	return (html += "</tr></table>");
 }
 
-async function lists(posts, STYLE) {
+async function lists(response, STYLE) {
 	let markdown = [];
 	STYLE = STYLE.toLowerCase();
-	posts.forEach((post, index) => {
+	let posts = response.data.publication.posts.edges.map(edge => edge.node);
+	posts.forEach((post) => {
 		switch (STYLE) {
 			case "list":
 			case "list-unordered":
@@ -39,9 +40,6 @@ async function lists(posts, STYLE) {
 				break;
 			case "list-ordered":
 				markdown.push(`1. [${post.title}](${post.url})`);
-				break;
-			case "list-gist":
-				markdown.push(`${index + 1}. ${post.title}`);
 				break;
 		}
 	});
