@@ -7,32 +7,27 @@ function blog_table(posts, style) {
 	let html = "<table><tr>";
 
 	posts.forEach((post, index) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, publishedAt } = post;
 
 		if (0 !== index && index % column === 0) {
 			html += "</tr><tr>";
 		}
 
 		html += `<td>${helpers.img(coverImage, url, title, "", "")}
-${helpers.a(url, title, `<strong>${title}</strong>`)}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-			dateUpdated === null
-				? ""
-				: ` | <strong>Updated: ${helpers.parseDate(
-						dateUpdated
-				  )}</strong>`
-		}</div>
-<br/> ${brief}</td>`;
-	});
+				${helpers.a(url, title, `<strong>${title}</strong>`)}
+				<div><strong>${helpers.parseDate(publishedAt)}</strong></div>
+				<br/> ${brief}</td>`;
+		});
 
 	return (html += "</tr></table>");
 }
 
 async function lists(response, STYLE) {
 	let markdown = [];
-	STYLE = STYLE.toLowerCase();
 	let posts = response.data.publication.posts.edges.map(edge => edge.node);
-	posts.forEach((post) => {
+	STYLE = STYLE.toLowerCase();
+
+	posts.forEach((post, index) => {
 		switch (STYLE) {
 			case "list":
 			case "list-unordered":
@@ -46,49 +41,32 @@ async function lists(response, STYLE) {
 	return markdown.join("\n");
 }
 
-async function blog(posts, STYLE) {
+async function blog(response, STYLE) {
 	let markdown = [];
+	let posts = response.data.publication.posts.edges.map(edge => edge.node);
 	STYLE = STYLE.toLowerCase();
-	let isalternate = "blog-alternate" === STYLE;
-	STYLE = "blog-alternate" === STYLE ? "blog-left" : STYLE;
 
 	if (STYLE.startsWith("blog-grid")) {
 		return blog_table(posts, STYLE);
 	}
 
 	posts.forEach((post) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, publishedAt } = post;
 
 		switch (STYLE) {
 			case "blog":
 				markdown.push(`<h3>${helpers.a(url, title, title)}</h3>
-${helpers.img(coverImage, url, title, "", "400px")}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-					dateUpdated === null
-						? ""
-						: ` | <strong>Updated: ${helpers.parseDate(
-								dateUpdated
-						  )}</strong>`
-				}</div>
-<p>${brief}</p>`);
+					${helpers.img(coverImage, url, title, "", "400px")}
+					<div><strong>Published: ${helpers.parseDate(publishedAt)}</strong></div>
+					<p>${brief}</p>`);
 				break;
 			case "blog-left":
 			case "blog-right":
-				let align = "blog-left" === STYLE ? "left" : "right";
-				markdown.push(`<p align="left">
-${helpers.img(coverImage, url, title, align, "250px")}
-${helpers.a(url, title, `<strong>${title}</strong>`)}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-					dateUpdated === null
-						? ""
-						: ` | <strong>Updated: ${helpers.parseDate(
-								dateUpdated
-						  )}</strong>`
-				}</div>
-<br/> ${brief} </p> <br/> <br/>`);
-				if (isalternate) {
-					STYLE = "blog-left" === STYLE ? "blog-right" : "blog-left";
-				}
+				let align = (STYLE === "blog-left") ? "left" : "right";
+				markdown.push(`<p align="left">${helpers.img(coverImage, url, title, align, "250px")}
+				${helpers.a(url, title, `<strong>${title}</strong>`)}
+				<div><strong>Updated: ${helpers.parseDate(publishedAt)}</strong></div>
+				<br/> ${brief} </p> <br/> <br/>`);
 				break;
 		}
 	});

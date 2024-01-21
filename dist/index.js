@@ -1040,117 +1040,6 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
-/***/ 607:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-var request_1 = __webpack_require__(234);
-/**
- * The maximum number of characters in a pinned Gist line
- */
-exports.MAX_LENGTH = 63;
-/**
- * The maximum number of lines in a pinned Gist
- */
-exports.MAX_LINES = 5;
-/**
- * The maximum width of a pinned Gist image
- */
-exports.MAX_WIDTH = 325;
-/**
- * The maximum height of a pinned Gist image
- */
-exports.MAX_HEIGHT = 100;
-var GistBox = /** @class */ (function () {
-    function GistBox(_a) {
-        var id = _a.id, token = _a.token;
-        this.id = id;
-        this.token = token;
-    }
-    /**
-     * Get the Gist
-     */
-    GistBox.prototype.get = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, request_1.request('GET /gists/:gist_id', {
-                        gist_id: this.id,
-                        headers: {
-                            authorization: "token " + this.token
-                        }
-                    })];
-            });
-        });
-    };
-    /**
-     * Update the Gist
-     */
-    GistBox.prototype.update = function (updates) {
-        return __awaiter(this, void 0, void 0, function () {
-            var gist, filename;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, this.get()];
-                    case 1:
-                        gist = _b.sent();
-                        filename = Object.keys(gist.data.files)[0];
-                        return [2 /*return*/, request_1.request('PATCH /gists/:gist_id', {
-                                files: (_a = {}, _a[filename] = updates, _a),
-                                gist_id: this.id,
-                                headers: {
-                                    authorization: "token " + this.token
-                                }
-                            })];
-                }
-            });
-        });
-    };
-    return GistBox;
-}());
-exports.GistBox = GistBox;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
 /***/ 287:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -3010,31 +2899,26 @@ function blog_table(posts, style) {
 	let html = "<table><tr>";
 
 	posts.forEach((post, index) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, publishedAt } = post;
 
 		if (0 !== index && index % column === 0) {
 			html += "</tr><tr>";
 		}
 
 		html += `<td>${helpers.img(coverImage, url, title, "", "")}
-${helpers.a(url, title, `<strong>${title}</strong>`)}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-			dateUpdated === null
-				? ""
-				: ` | <strong>Updated: ${helpers.parseDate(
-						dateUpdated
-				  )}</strong>`
-		}</div>
-<br/> ${brief}</td>`;
-	});
+				${helpers.a(url, title, `<strong>${title}</strong>`)}
+				<div><strong>${helpers.parseDate(publishedAt)}</strong></div>
+				<br/> ${brief}</td>`;
+		});
 
 	return (html += "</tr></table>");
 }
 
 async function lists(response, STYLE) {
 	let markdown = [];
-	STYLE = STYLE.toLowerCase();
 	let posts = response.data.publication.posts.edges.map(edge => edge.node);
+	STYLE = STYLE.toLowerCase();
+
 	posts.forEach((post, index) => {
 		switch (STYLE) {
 			case "list":
@@ -3049,49 +2933,32 @@ async function lists(response, STYLE) {
 	return markdown.join("\n");
 }
 
-async function blog(posts, STYLE) {
+async function blog(response, STYLE) {
 	let markdown = [];
+	let posts = response.data.publication.posts.edges.map(edge => edge.node);
 	STYLE = STYLE.toLowerCase();
-	let isalternate = "blog-alternate" === STYLE;
-	STYLE = "blog-alternate" === STYLE ? "blog-left" : STYLE;
 
 	if (STYLE.startsWith("blog-grid")) {
 		return blog_table(posts, STYLE);
 	}
 
 	posts.forEach((post) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, publishedAt } = post;
 
 		switch (STYLE) {
 			case "blog":
 				markdown.push(`<h3>${helpers.a(url, title, title)}</h3>
-${helpers.img(coverImage, url, title, "", "400px")}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-					dateUpdated === null
-						? ""
-						: ` | <strong>Updated: ${helpers.parseDate(
-								dateUpdated
-						  )}</strong>`
-				}</div>
-<p>${brief}</p>`);
+					${helpers.img(coverImage, url, title, "", "400px")}
+					<div><strong>Published: ${helpers.parseDate(publishedAt)}</strong></div>
+					<p>${brief}</p>`);
 				break;
 			case "blog-left":
 			case "blog-right":
-				let align = "blog-left" === STYLE ? "left" : "right";
-				markdown.push(`<p align="left">
-${helpers.img(coverImage, url, title, align, "250px")}
-${helpers.a(url, title, `<strong>${title}</strong>`)}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-					dateUpdated === null
-						? ""
-						: ` | <strong>Updated: ${helpers.parseDate(
-								dateUpdated
-						  )}</strong>`
-				}</div>
-<br/> ${brief} </p> <br/> <br/>`);
-				if (isalternate) {
-					STYLE = "blog-left" === STYLE ? "blog-right" : "blog-left";
-				}
+				let align = (STYLE === "blog-left") ? "left" : "right";
+				markdown.push(`<p align="left">${helpers.img(coverImage, url, title, align, "250px")}
+				${helpers.a(url, title, `<strong>${title}</strong>`)}
+				<div><strong>Updated: ${helpers.parseDate(publishedAt)}</strong></div>
+				<br/> ${brief} </p> <br/> <br/>`);
 				break;
 		}
 	});
@@ -3113,33 +2980,16 @@ function atag( link, title, content ) {
 	return ( link !== '' ) ? `<a href="${link}" title="${title}">${content}</a>` : content;
 }
 
-function imgtag( src, link, title, align, width ) {
+function imgtag( coverImage, link, title, align, width ) {
 	width   = ( width !== '' ) ? `width="${width}"` : '';
 	align   = ( width !== '' ) ? `align="${align}"` : '';
 	let alt = ( title !== '' ) ? `alt="${title}"` : '';
-	return ( src !== '' ) ? atag( link, title, `<img src="${src}" ${alt} ${width} ${align} />` ) : '';
+	return ( src !== '' ) ? atag( link, title, `<img src="${coverImage.url}" ${alt} ${width} ${align} />` ) : '';
 }
 
 module.exports = {
 	a: atag,
 	img: imgtag,
-	post_link: function( post, username, BLOG_URL = false ) {
-		return ( '' !== BLOG_URL ) ? `${BLOG_URL}/${post.slug}` : `https://${username}.hashnode.dev/${post.slug}-${post.cuid}`;
-	},
-	image_size: function( user_value, _default, small, large ) {
-		if( 'small' === user_value ) {
-			return small;
-		}
-
-		if( 'large' === user_value ) {
-			return large;
-		}
-
-		if( '' === user_value ) {
-			return _default;
-		}
-		return user_value;
-	},
 	parseDate(date){
 		const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 		const parsedData = new Date(date);
@@ -3159,72 +3009,52 @@ const render      = __webpack_require__( 135 );
 const core        = __webpack_require__( 186 );
 const fs          = __webpack_require__( 747 );
 const commitFile  = __webpack_require__( 689 );
-const { GistBox } = __webpack_require__( 607 );
 
 // most @actions toolkit packages have async methods
 async function run() {
 	try {
-		const TYPE     = core.getInput( 'TYPE' );
 		const FILE     = core.getInput( 'FILE' );
-		const USERNAME = core.getInput( 'USERNAME' );
 		const STYLE    = core.getInput( 'STYLE' );
-		const COUNT    = core.getInput( 'COUNT' );
+		const LIMIT    = core.getInput( 'LIMIT' );
 		const BLOG_URL = core.getInput( 'BLOG_URL' );
 
 		core.startGroup( 'Parsed Config' );
-		core.info( `Type                     = ${TYPE}` );
-		core.info( `File / Gist ID           = ${FILE}` );
-		core.info( `Hashnode Username        = ${USERNAME}` );
-		core.info( `Output Style             = ${STYLE}` );
-		core.info( `No Of Posts To Display   = ${COUNT}` );
+		core.info( `File			= ${FILE}` );
+		core.info( `Output Style	= ${STYLE}` );
+		core.info( `MAX Visisble	= ${LIMIT}` );
 		core.endGroup();
 
 
-		const results = await query( USERNAME.toLowerCase(), COUNT, BLOG_URL );
-		let output    = '';
+		const results = await query( BLOG_URL, LIMIT );
 
 		core.startGroup( 'Latest Posts' );
 		core.info( JSON.stringify( results, null, 2 ) );
 		core.endGroup();
 		core.info( ' ' );
 
-		if( 'gist' === TYPE.toLowerCase() ) {
-			if( STYLE.toLowerCase().startsWith( 'list' ) ) {
-				output = await render.list( results, STYLE );
-			} else {
-				output = await render.list( results, 'list' );
-			}
+		const regex			= /^(<!--(?:\s|)HASHNODE_BLOG:(?:START|start)(?:\s|)-->)(?:\n|)([\s\S]*?)(?:\n|)(<!--(?:\s|)HASHNODE_BLOG:(?:END|end)(?:\s|)-->)$/gm;
+		const file_path    	= `${process.env.GITHUB_WORKSPACE}/${FILE}`;
+		const file_content 	= fs.readFileSync( file_path );
 
-			let list_data = await render.list( results, 'list-gist' );
-			const box     = new GistBox( { id: FILE, token: process.env.GITHUB_TOKEN } );
-
-			await box.update( {
-				filename: 'blog.md',
-				description: 'My Latest Blogs 👇',
-				content: list_data + '\n\n' + output
-			} );
-		} else {
-			const file_path    = `${process.env.GITHUB_WORKSPACE}/${FILE}`;
-			const file_content = fs.readFileSync( file_path );
-
-			if( STYLE.toLowerCase().startsWith( 'list' ) ) {
-				output = await render.list( results, STYLE );
-			} else if( STYLE.toLowerCase().startsWith( 'blog' ) ) {
-				output = await render.blog( results, STYLE );
-			}
-
-
-			const regex  = /^(<!--(?:\s|)HASHNODE_BLOG:(?:START|start)(?:\s|)-->)(?:\n|)([\s\S]*?)(?:\n|)(<!--(?:\s|)HASHNODE_BLOG:(?:END|end)(?:\s|)-->)$/gm;
-			const result = file_content.toString().replace( regex, `$1\n${output}\n$3` );
-
-			fs.writeFileSync( file_path, result );
-
-			await commitFile().catch( err => {
-				core.error( err );
-				core.info( err.stack );
-				process.exit( err.code || -1 );
-			} );
+		//
+		let output    = '';
+		if (STYLE.toLowerCase().startsWith( 'list' )) {
+			output = await render.list( results, STYLE );
 		}
+		else if(STYLE.toLowerCase().startsWith( 'blog' )) {
+			output = await render.blog( results, STYLE );
+		}
+
+
+		const result = file_content.toString().replace( regex, `$1\n${output}\n$3` );
+
+		fs.writeFileSync( file_path, result );
+
+		await commitFile().catch( err => {
+			core.error( err );
+			core.info( err.stack );
+			process.exit( err.code || -1 );
+		} );
 
 	} catch( error ) {
 		core.setFailed( error.message );
@@ -3240,20 +3070,20 @@ run();
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const fetch           = __webpack_require__( 467 );
-const helpers         = __webpack_require__( 505 );
 const API_URL         = 'https://gql.hashnode.com/',
-	  DEFAULT_HEADERS = {
-		  'Content-type': 'application/json',
-	  };
 
-async function query_api( username = false ) {
+async function query_api( blog_url = false, limit = 6 ) {
 	const query       = `{
-		publication(host: "phonghaw2coder.hashnode.dev") {
-			posts(first: 5) {
+		publication(host: "${blog_url}") {
+			posts(first: ${limit}) {
 			  edges {
 				node {
 				  url
 				  title
+				  brief
+				  coverImage {
+					url
+				  }
 				}
 			  }
 			}
@@ -3261,7 +3091,9 @@ async function query_api( username = false ) {
 	}`;
 	const result      = await fetch( API_URL, {
 		method: 'POST',
-		headers: DEFAULT_HEADERS,
+		headers: {
+			'Content-type': 'application/json',
+		},
 		body: JSON.stringify( { query } ),
 	} );
 	const ApiResponse = await result.json();
@@ -3269,11 +3101,10 @@ async function query_api( username = false ) {
 	return ApiResponse;
 }
 
-module.exports = async function( username ) {
-	let results = await query_api( username );
+module.exports = async function( blog_url, limit ) {
+	let results = await query_api( blog_url, limit );
 	return results;
 };
-
 
 /***/ }),
 

@@ -1,18 +1,19 @@
 const fetch           = require( "node-fetch" );
 const helpers         = require( './helpers' );
 const API_URL         = 'https://gql.hashnode.com/',
-	  DEFAULT_HEADERS = {
-		  'Content-type': 'application/json',
-	  };
 
-async function query_api( username = false ) {
+async function query_api( blog_url, limit ) {
 	const query       = `{
-		publication(host: "phonghaw2coder.hashnode.dev") {
-			posts(first: 5) {
+		publication(host: "${blog_url}") {
+			posts(first: ${limit}) {
 				edges {
 				node {
 					url
 					title
+					brief
+					coverImage {
+					url
+					}
 				}
 				}
 			}
@@ -20,7 +21,9 @@ async function query_api( username = false ) {
 	}`;
 	const result      = await fetch( API_URL, {
 		method: 'POST',
-		headers: DEFAULT_HEADERS,
+		headers: {
+			'Content-type': 'application/json',
+		},
 		body: JSON.stringify( { query } ),
 	} );
 	const ApiResponse = await result.json();
@@ -28,7 +31,7 @@ async function query_api( username = false ) {
 	return ApiResponse;
 }
 
-module.exports = async function( username ) {
-	let results = await query_api( username );
+module.exports = async function( blog_url, limit ) {
+	let results = await query_api( blog_url, limit );
 	return results;
 };
