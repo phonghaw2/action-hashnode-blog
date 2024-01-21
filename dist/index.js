@@ -3243,37 +3243,26 @@ run();
 
 const fetch           = __webpack_require__( 467 );
 const helpers         = __webpack_require__( 505 );
-const API_URL         = 'https://api.hashnode.com',
+const API_URL         = 'https://gql.hashnode.com/',
 	  DEFAULT_HEADERS = {
 		  'Content-type': 'application/json',
 	  };
 
 async function query_api( username = false ) {
-// 	const query       = `
-// {
-// 	user(username: "${username}"){
-// 		posts(pageSize: 5 page: 1) {
-// 		  	nodes {
-// 				title
-// 				url
-// 			}
-// 		}
-// 	}
-// }
-// `;
+	const query       = `{
+	user(username: "${username}"){
+		posts(pageSize: 5 page: 1) {
+			nodes {
+				title
+				url
+			}
+		}
+	}
+	}`;
 	const result      = await fetch( API_URL, {
 		method: 'POST',
 		headers: DEFAULT_HEADERS,
-		body: JSON.stringify( {
-			user(username: "Phonghaw2"){
-				posts(pageSize: 5 page: 1) {
-					nodes {
-						title
-						url
-					}
-				}
-			}
-		} ),
+		body: JSON.stringify( { query } ),
 	} );
 	const ApiResponse = await result.json();
 
