@@ -3070,7 +3070,7 @@ run();
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const fetch           = __webpack_require__( 467 );
-const API_URL         = 'https://gql.hashnode.com/',
+const API_URL         = 'https://gql.hashnode.com/';
 
 async function query_api( blog_url = false, limit = 6 ) {
 	const query       = `{
@@ -3084,6 +3084,7 @@ async function query_api( blog_url = false, limit = 6 ) {
 				  coverImage {
 					url
 				  }
+				  publishedAt
 				}
 			  }
 			}

@@ -1,23 +1,24 @@
 const fetch           = require( "node-fetch" );
 const helpers         = require( './helpers' );
-const API_URL         = 'https://gql.hashnode.com/',
+const API_URL         = 'https://gql.hashnode.com/';
 
 async function query_api( blog_url, limit ) {
 	const query       = `{
 		publication(host: "${blog_url}") {
 			posts(first: ${limit}) {
-				edges {
+			  edges {
 				node {
+				  url
+				  title
+				  brief
+				  coverImage {
 					url
-					title
-					brief
-					coverImage {
-					url
-					}
+				  }
+				  publishedAt
 				}
-				}
+			  }
 			}
-			}
+		  }
 	}`;
 	const result      = await fetch( API_URL, {
 		method: 'POST',
